@@ -38,23 +38,22 @@ class PASSCCTVSystem:
         """
         self.device = device
         
-        print("=" * 70)
-        print(" " * 20 + "PASS-CCTV SYSTEM")
-        print(" " * 15 + "Initializing Components...")
-        print("=" * 70)
+        print("PASS-CCTV SYSTEM")
+        print("Initializing Components...")
+
         
         # Stage 1: Human Detection & Tracking
         print("\n[Stage 1] Loading detection and tracking models...")
         yolo_path = Path("models/yolov5s.pt")
         self.detector = YOLOv5Detector(str(yolo_path), device=device)
-        print("  ✓ YOLOv5 detector loaded")
+        print(" YOLOv5 detector loaded")
         
         osnet_path = Path("models/osnet_x1_0_imagenet.pth")
         osnet = build_osnet(str(osnet_path), device=device)
         feature_extractor = FeatureExtractor(osnet, device=device)
         self.tracker = HumanTracker(feature_extractor, max_age=30, min_hits=3)
-        print("  ✓ OSNet feature extractor loaded")
-        print("  ✓ Human tracker initialized")
+        print(" OSNet feature extractor loaded")
+        print(" Human tracker initialized")
         
         # Stage 2: Anomaly Recognition
         print("\n[Stage 2] Loading anomaly detectors...")
@@ -70,22 +69,20 @@ class PASSCCTVSystem:
                 loitering_threshold=0.3,
                 loitering_duration=10.0
             )
-            print("  ✓ Intersection detector loaded (intrusion + loitering)")
+            print(" Intersection detector loaded (intrusion + loitering)")
         
         if enable_abandonment:
             self.luggage_tracker = LuggageTracker(
                 self.detector,
                 abandonment_duration=10.0
             )
-            print("  ✓ Luggage tracker loaded (abandonment)")
+            print(" Luggage tracker loaded (abandonment)")
         
         if enable_arson:
             self.scene_analyzer = SceneAnalyzer(device=device)
-            print("  ✓ Scene analyzer loaded (arson)")
+            print(" Scene analyzer loaded (arson)")
         
-        print("\n" + "=" * 70)
-        print(" " * 15 + "PASS-CCTV System Ready")
-        print("=" * 70)
+        print("PASS-CCTV System Ready")
         
         self.frame_count = 0
         self.start_time = None
